@@ -104,8 +104,8 @@ app.post('/addSlideShow',jwtMiddleware,upload.single('file'),async (req,res)=>{
         const resCloud = await cloudinary.uploader.upload(req.file.path);
 
         const newSlide=new SlideShow({
+            _id:resCloud.public_id,
             image:resCloud.secure_url,
-            public_id:resCloud.public_id,
         })
 
         mongoConnect();
