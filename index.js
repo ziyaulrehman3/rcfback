@@ -7,12 +7,13 @@ import path from 'path'
 import fs from 'fs'
 import {fileURLToPath} from 'url'
 import jwt from 'jsonwebtoken'
+import {v2 as cloudinary} from 'cloudinary'
+
 import upload from './customModules/multerConfig.js'
 import {mongoConnect,Event,SlideShow} from './customModules/mongodb.js'
-
-
 import {TransporterSend} from './customModules/nodemailer.js'
 import jwtMiddleware from './customModules/jwtMiddleware.js'
+
 
 const app=express();
 
@@ -30,6 +31,15 @@ app.use("/uploads", express.static("uploads"));
  const __dirname=path.dirname(__filename);
 
 //URL End
+
+//Cloudnary Start
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+
+//Cloudnary End
 
 
 app.get("/",(req,res)=>{
@@ -88,11 +98,14 @@ app.post('/addSlideShow',jwtMiddleware,upload.single('file'),async (req,res)=>{
         return ;
     }
 
+ 
     try{
-        const newSlide=new SlideShow({
-            image:req.file.filename,
-        })
+        
+        const resCloud = await cloudinary.uploader.upload(req.file.path);
 
+        const newSlide=new SlideShow({
+            image:resCloud.secure_url,
+        })
 
         mongoConnect();
         const result=await newSlide.save();
