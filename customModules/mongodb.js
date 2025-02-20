@@ -38,7 +38,8 @@ let eventSchema= new mongoose.Schema({
 })
 
 let slidesShow=new mongoose.Schema({
-    image:{type:String}
+    image:{type:String},
+    public_id:{type:String},
 })
 
 export let SlideShow=mongoose.model("SlideShow",slidesShow);

@@ -105,6 +105,7 @@ app.post('/addSlideShow',jwtMiddleware,upload.single('file'),async (req,res)=>{
 
         const newSlide=new SlideShow({
             image:resCloud.secure_url,
+            public_id:resCloud.public_id,
         })
 
         mongoConnect();
@@ -119,23 +120,18 @@ app.post('/addSlideShow',jwtMiddleware,upload.single('file'),async (req,res)=>{
         
 })
 
-app.delete('/removeSlideShow/:filename',jwtMiddleware,async (req,res)=>{
+app.delete('/removeSlideShow/:public_id/:imgURL',jwtMiddleware,async (req,res)=>{
 
-    const filename=req.params.filename;
-    const filePath=path.join(__dirname,'uploads',filename);
+
 
     try{
 
-        await fs.unlink(filePath,(err)=>{
-            
-            if(err){
-                res.status(400).json({message:"Slide not deleted"})
-            }
-        })
 
         mongoConnect();
 
-        await SlideShow.findOneAndDelete({image:filename})
+        const resCloud=await cloudinary.uploader.destroy(public_id)
+
+        await SlideShow.findOneAndDelete({image:imgURL})
 
         res.status(200).json({message:"Slide delete Succesfully"})
 
@@ -234,7 +230,10 @@ app.post('/addMainImage/:_id',jwtMiddleware,upload.single('file'),async (req,res
             try{
                 mongoConnect();
 
-                await Event.findOneAndUpdate({_id:req.params._id},{imageMain:req.file.filename})
+                const resCloud = await cloudinary.uploader.upload(req.file.path);
+
+
+                await Event.findOneAndUpdate({_id:req.params._id},{imageMain:resCloud.secure_url})
                 
                 res.status(200).json({message:"Image Update Succesfully"})
     
@@ -255,11 +254,14 @@ app.post('/addThankingPerson/:_id',jwtMiddleware,upload.single('file'),async (re
        }else{
 
             try{
+
+                const resCloud = await cloudinary.uploader.upload(req.file.path);
+
                 mongoConnect();
 
                 await Event.findOneAndUpdate(
                     {_id:req.params._id},
-                    {$push:{thankingPerson:{name:req.body.name,image:req.file.filename}}},
+                    {$push:{thankingPerson:{name:req.body.name,image:resCloud.secure_url}}},
                 )
                 
                 res.status(200).json({message:"Image Update Succesfully"})
@@ -282,11 +284,14 @@ app.post('/addEventImages/:_id',jwtMiddleware,upload.single('file'),async (req,r
        }else{
 
             try{
+
+                const resCloud = await cloudinary.uploader.upload(req.file.path);
+
                 mongoConnect();
 
                 await Event.findOneAndUpdate(
                     {_id:req.params._id},
-                    {$push:{images:req.file.filename}},
+                    {$push:{images:resCloud.secure_url}},
                 )
                 
                 res.status(200).json({message:"Image Update Succesfully"})
