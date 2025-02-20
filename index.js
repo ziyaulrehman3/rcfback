@@ -120,7 +120,7 @@ app.post('/addSlideShow',jwtMiddleware,upload.single('file'),async (req,res)=>{
         
 })
 
-app.delete('/removeSlideShow/:public_id/:imgURL',jwtMiddleware,async (req,res)=>{
+app.delete('/removeSlideShow/:_id',jwtMiddleware,async (req,res)=>{
 
 
 
@@ -129,9 +129,9 @@ app.delete('/removeSlideShow/:public_id/:imgURL',jwtMiddleware,async (req,res)=>
 
         mongoConnect();
 
-        const resCloud=await cloudinary.uploader.destroy(public_id)
+        const resCloud=await cloudinary.uploader.destroy(req.params._id)
 
-        await SlideShow.findOneAndDelete({image:imgURL})
+        await SlideShow.findOneAndDelete({_id:req.params._id})
 
         res.status(200).json({message:"Slide delete Succesfully"})
 
