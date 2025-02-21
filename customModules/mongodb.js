@@ -32,6 +32,7 @@ let eventSchema= new mongoose.Schema({
     thankingPerson:[{
         name:{type:String},
         image:{type:String},
+        _id:{type:String}
     }]
     
 

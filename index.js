@@ -207,7 +207,7 @@ app.put('/eventUpdate/:_id',jwtMiddleware,async (req,res)=>{
 
         const result=await Event.findByIdAndUpdate(req.params._id,
             req.body,
-            {new:true,overwrite:true},
+            {new:true},
         )
 
         res.status(200).json(result);
@@ -261,7 +261,7 @@ app.post('/addThankingPerson/:_id',jwtMiddleware,upload.single('file'),async (re
 
                 await Event.findOneAndUpdate(
                     {_id:req.params._id},
-                    {$push:{thankingPerson:{name:req.body.name,image:resCloud.secure_url}}},
+                    {$push:{thankingPerson:{_id:resCloud.public_id,name:req.body.name,image:resCloud.secure_url}}},
                 )
                 
                 res.status(200).json({message:"Image Update Succesfully"})
@@ -337,7 +337,7 @@ app.get('/getEvent/:eventId',async (req,res)=>{
     }
 })
 
-app.get('/getLatestEvent',async (req,res)=>{
+app.get('/getLatestEvents',async (req,res)=>{
 
     try{
         mongoConnect();
