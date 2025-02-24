@@ -8,6 +8,7 @@ import fs from 'fs'
 import {fileURLToPath} from 'url'
 import jwt from 'jsonwebtoken'
 import {v2 as cloudinary} from 'cloudinary'
+import cors from 'cors'
 
 import upload from './customModules/multerConfig.js'
 import {mongoConnect,Event,SlideShow} from './customModules/mongodb.js'
@@ -16,12 +17,12 @@ import jwtMiddleware from './customModules/jwtMiddleware.js'
 
 
 const app=express();
+app.use(cors())
 
 dotenv.config();
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-app.use(cros())
 
 
 app.use("/uploads", express.static("uploads"));
@@ -181,6 +182,8 @@ app.post('/addEvent',jwtMiddleware,async (req,res)=>{
         story,
         shortDescription,
     })
+
+    
 
     mongoConnect();
     
