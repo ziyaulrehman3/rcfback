@@ -321,7 +321,7 @@ app.get('/getAllEvents',async (req,res)=>{
         const result=await Event.find()
         res.status(200).json(result)
     }catch(err){
-        res.status(400);
+        res.status(400).json({ message: 'Something went wrong', error: err });
         console.log(err)
     }
 })
