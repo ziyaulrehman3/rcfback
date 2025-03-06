@@ -77,6 +77,12 @@ app.post('/login',(req,res)=>{
 
 })
 
+app.get('/authentication',(req,res)=>{
+    
+    res.status(200).json({'Message':'Token is Valid'})
+})
+
+
 //Slide Show Start
 
 app.get('/getSlideShow',async (req,res)=>{
