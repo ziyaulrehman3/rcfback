@@ -77,7 +77,7 @@ app.post('/login',(req,res)=>{
 
 })
 
-app.get('/authentication',(req,res)=>{
+app.get('/authentication',jwtMiddleware,(req,res)=>{
     
     res.status(200).json({'Message':'Token is Valid'})
 })
